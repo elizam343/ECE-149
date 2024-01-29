@@ -182,6 +182,9 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
     return Match, num_stages
 
 
+
+
+"""
 # Load the arrays
 applicants = np.load('applicants.npy')
 colleges = np.load('colleges.npy')
@@ -210,7 +213,6 @@ print("Matching Results:")
 for student, college in Match.items():
     print(f"Student {student} matched with College {college}")
 print(f"Number of Stages: {NumStages}")
-
 
 # Applicants preferences array
 applicants = np.array([
@@ -257,4 +259,6 @@ for i, stage in enumerate(Match):
         print(f"  Applicant {j} matched with College {match}")
 
 print("Number of Stages:", NumStages)
+"""
+
 
