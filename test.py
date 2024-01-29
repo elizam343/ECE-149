@@ -142,8 +142,9 @@ import numpy as np
 from my_gale_shapley import GaleShapleyAlgorithm, GaleShapleyAlgorithmQuota
 
 # Sample preference matrices (you can replace these with your own)
-P1 = np.array([[1, 0, 2], [0, 2, 1], [1, 0, 2]])
-P2 = np.array([[1, 0, 2], [0, 2, 1], [1, 0, 2]])
+P1 = np.array([[0, 1, 2], [1, 0, 2], [2, 0, 1]])  # Each row is a unique permutation
+P2 = np.array([[2, 1, 0], [0, 2, 1], [1, 0, 2]])  # Each column is a unique permutation
+
 
 # Run Gale-Shapley Algorithm
 proposal_list, num_stages = GaleShapleyAlgorithm(P1, P2)
