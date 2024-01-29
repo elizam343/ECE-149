@@ -101,6 +101,7 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
     group2_preferences = convert_group2_to_dict(P2)
 
     proposals = {chr(65 + i): 0 for i in range(P1.shape[0])}
+    last_choices = {chr(65 + i): None for i in range(P1.shape[0])}
     matches = {chr(97 + i): [] for i in range(P2.shape[1])}
     num_stages = 0
 
@@ -115,6 +116,7 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
 
                 if len(matches[chr(97 + proposee)]) < quota[proposee]:
                     matches[chr(97 + proposee)].append(proposer)
+                    last_choices[proposer] = proposee
                 else:
                     # Check if proposer is preferred over any current match
                     current_matches = matches[chr(97 + proposee)]
@@ -127,6 +129,7 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
                                     matches[chr(97 + proposee)].remove(current_match)
                                     matches[chr(97 + proposee)].append(proposer)
                                     new_proposals[current_match] = group1_preferences[current_match].index(last_choices[current_match]) + 1
+                                    last_choices[proposer] = proposee
                                     break
 
         for proposer in proposals:
@@ -143,8 +146,10 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
 
     Match = np.zeros((P1.shape[0], P2.shape[1]), dtype=int)
     for proposee, proposers in matches.items():
- 
+        for proposer in proposers:
+            Match[ord(proposer) - 65, ord(proposee) - 97] = 1
 
+    return Match, num_stages
 
 
 
