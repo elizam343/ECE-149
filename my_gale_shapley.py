@@ -34,25 +34,25 @@ def GaleShapleyAlgorithm(P1, P2):
     Runs the Gale-Shapley algorithm, where agents in Group 1 (the group corresponding to P1) propose.
 
     Args:
-        file_path_P1 (str): File path for P1 numpy array.
-        file_path_P2 (str): File path for P2 numpy array.
+        P1 (numpy.ndarray): An m x n matrix describing the preferences of the agents in Group 1.
+        P2 (numpy.ndarray): An m x n matrix describing the preferences of the agents in Group 2.
 
     Returns:
-        proposal_list (list): List of dictionaries representing the proposals at each stage.
-        num_stages (int): The number of stages that it takes the Gale-Shapley algorithm to return a proposal.
+        Match (numpy.ndarray): An m x n matrix which indicates the matches after running the algorithm.
+        NumStages (int): The number of stages that it takes the Gale-Shapley algorithm to return a proposal.
     '''
-    group1_preferences = convert_group1_to_dict(np.load(P1))
-    group2_preferences = convert_group2_to_dict(np.load(P2))
+    group1_preferences = convert_group1_to_dict(P1)
+    group2_preferences = convert_group2_to_dict(P2)
 
     # Initialize proposals and last_choices
-    proposals = {chr(65 + i): group1_preferences[chr(65 + i)][0] for i in range(group1_preferences.shape[0])}
-    last_choices = {chr(65 + i): -1 for i in range(group1_preferences.shape[0])}
+    proposals = {chr(65 + i): group1_preferences[chr(65 + i)][0] for i in range(P1.shape[0])}
+    last_choices = {chr(65 + i): -1 for i in range(P1.shape[0])}
     proposal_list = [proposals.copy()]  # List to store proposals at each stage
 
-    matches = {chr(97 + i): None for i in range(group2_preferences.shape[1])}
+    matches = {chr(97 + i): None for i in range(P2.shape[1])}
     num_stages = 0
 
-    proposers = {chr(65 + i): 0 for i in range(group1_preferences.shape[0])}  # Track proposee index for each proposer
+    proposers = {chr(65 + i): 0 for i in range(P1.shape[0])}  # Track proposee index for each proposer
 
     while True:
         num_stages += 1
@@ -63,14 +63,14 @@ def GaleShapleyAlgorithm(P1, P2):
             proposee = group1_preferences[int(ord(proposer) - 65)][proposee_index]
 
             # Check if proposee is a valid member of Group 2 (0, 1, 2, ...)
-            if 0 <= proposee < group2_preferences.shape[1]:
+            if 0 <= proposee < P2.shape[1]:
                 # If the proposee already has a better match (more preferred than proposer), skip
                 if matches[chr(proposee + 97)]:
                     proposee_matches = matches[chr(proposee + 97)]
-                    if group2_preferences[int(ord(proposee_matches) - 97)].tolist().index(
-                            group1_preferences[int(ord(proposee_matches) - 65)][0]) < \
-                            group2_preferences[int(ord(proposee_matches) - 97)].tolist().index(
-                                group1_preferences[int(ord(proposer) - 65)][0]):
+                    if group2_preferences[chr(proposee_matches + 97)].index(
+                            group1_preferences[chr(proposee_matches + 65)][0]) < \
+                            group2_preferences[chr(proposer + 97)].index(
+                                group1_preferences[chr(proposer + 65)][0]):
                         continue
                 # Update the match
                 matches[chr(proposee + 97)] = proposer
@@ -81,10 +81,10 @@ def GaleShapleyAlgorithm(P1, P2):
 
         # Check if any proposer needs to propose to the next choice
         for proposer in proposers:
-            if proposers[proposer] < group2_preferences.shape[1] - 1:
+            if proposers[proposer] < P2.shape[1] - 1:
                 last_choice = last_choices[proposer]
                 next_choice_index = group1_preferences[int(ord(proposer) - 65)].tolist().index(last_choice) + 1
-                while next_choice_index < group1_preferences.shape[1]:
+                while next_choice_index < P1.shape[1]:
                     next_choice = group1_preferences[int(ord(proposer) - 65)][next_choice_index]
                     if not any(new_proposals[p] == next_choice for p in new_proposals) and next_choice >= 0:
                         new_proposals[proposer] = next_choice
@@ -100,7 +100,13 @@ def GaleShapleyAlgorithm(P1, P2):
         if not new_proposals:
             break
 
-    return proposal_list, num_stages
+    # Convert the final matching into a numpy array
+    Match = np.zeros((P1.shape[0], P2.shape[1]), dtype=int)
+    for proposer, proposee in matches.items():
+        if proposer is not None and proposee is not None:
+            Match[ord(proposer) - 65, ord(proposee) - 97] = 1
+
+    return Match, num_stages
 
 
 
@@ -119,7 +125,7 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
         Match (numpy.ndarray): an m x n matrix which indicates the matches after running the algorithm. See the HW assignment for additional details on the structure of Match.
         NumStages (int): the number of stages that it takes the Gale-Shapley algorithm to return a proposal.
     '''
-    
+
     P1 = np.load(P1)  # Load P1 from file
     P2 = np.load(P2)  # Load P2 from file
     
