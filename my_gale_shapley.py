@@ -112,7 +112,7 @@ def print_proposal_stages(proposal_list):
         print(f"Stage {stage}:")
         for proposer, proposee in proposals.items():
             print(f"  {proposer} proposes to {proposee}")
-        print()  # Add a blank line for better readability between stages
+        print()
 
 
 
