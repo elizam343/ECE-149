@@ -29,7 +29,7 @@ def convert_group2_to_dict(P2):
         group2_dict[key] = list(P2[:, i])
     return group2_dict
 
-def GaleShapleyAlgorithm(file_path_P1, file_path_P2):
+def GaleShapleyAlgorithm(P1, P2):
     '''
     Runs the Gale-Shapley algorithm, where agents in Group 1 (the group corresponding to P1) propose.
 
@@ -41,8 +41,8 @@ def GaleShapleyAlgorithm(file_path_P1, file_path_P2):
         proposal_list (list): List of dictionaries representing the proposals at each stage.
         num_stages (int): The number of stages that it takes the Gale-Shapley algorithm to return a proposal.
     '''
-    group1_preferences = convert_group1_to_dict(np.load(file_path_P1))
-    group2_preferences = convert_group2_to_dict(np.load(file_path_P2))
+    group1_preferences = convert_group1_to_dict(np.load(P1))
+    group2_preferences = convert_group2_to_dict(np.load(P2))
 
     # Initialize proposals and last_choices
     proposals = {chr(65 + i): group1_preferences[chr(65 + i)][0] for i in range(group1_preferences.shape[0])}
@@ -104,24 +104,27 @@ def GaleShapleyAlgorithm(file_path_P1, file_path_P2):
 
 
 
-def print_proposal_stages(proposal_list):
-    """
-    Prints the list of proposals at each stage of the Gale-Shapley algorithm.
-    """
-    for stage, proposals in enumerate(proposal_list, start=1):
-        print(f"Stage {stage}:")
-        for proposer, proposee in proposals.items():
-            print(f"  {proposer} proposes to {proposee}")
-        print()
-
-
-
 
 
 def GaleShapleyAlgorithmQuota(P1, P2, quota):
-    # Convert preferences to dictionaries
-    group1_preferences = {chr(65 + i): list(P1[i]) for i in range(P1.shape[0])}
-    group2_preferences = {chr(97 + i): list(P2[:, i]) for i in range(P2.shape[1])}
+    '''
+    Runs the Gale-Shapley algorithm, where agents in Group 1 (the group corresponding to P1) propose. Each agent in P2 has a number of spots available specified by the variable quota.
+
+    Args:
+        P1 (numpy.ndarray): an m x n matrix describing the preferences of the agents in Group 1. Each row is preference of each of m students.
+        P2 (numpy.ndarray): an m x n matrix describing the preferences of the agents in Group 2. Each column is preference of each of n hospitals.
+        quota (numpy.ndarray): an n x 1 vector describing the quota of each agent in Group 2.
+
+    Returns:
+        Match (numpy.ndarray): an m x n matrix which indicates the matches after running the algorithm. See the HW assignment for additional details on the structure of Match.
+        NumStages (int): the number of stages that it takes the Gale-Shapley algorithm to return a proposal.
+    '''
+    
+    P1 = np.load(P1)  # Load P1 from file
+    P2 = np.load(P2)  # Load P2 from file
+    
+    group1_preferences = convert_group1_to_dict(P1)
+    group2_preferences = convert_group2_to_dict(P2)
 
     # Initialize proposals, last_choices, and Match
     proposals = {chr(65 + i): group1_preferences[chr(65 + i)][0] for i in range(P1.shape[0])}
@@ -185,6 +188,17 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
 
 
 """
+def print_proposal_stages(proposal_list):
+    
+    #Prints the list of proposals at each stage of the Gale-Shapley algorithm.
+    
+    for stage, proposals in enumerate(proposal_list, start=1):
+        print(f"Stage {stage}:")
+        for proposer, proposee in proposals.items():
+            print(f"  {proposer} proposes to {proposee}")
+        print()
+
+
 # Load the arrays
 applicants = np.load('applicants.npy')
 colleges = np.load('colleges.npy')
