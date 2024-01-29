@@ -126,9 +126,6 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
         NumStages (int): the number of stages that it takes the Gale-Shapley algorithm to return a proposal.
     '''
 
-    P1 = np.load(P1)  # Load P1 from file
-    P2 = np.load(P2)  # Load P2 from file
-    
     group1_preferences = convert_group1_to_dict(P1)
     group2_preferences = convert_group2_to_dict(P2)
 
@@ -187,6 +184,12 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
         # Break the loop if there are no new proposals
         if not proposals:
             break
+
+    # Convert the final matching into a numpy array
+    Match = np.zeros((P1.shape[0], P2.shape[1]), dtype=int)
+    for proposer, proposee in Match.items():
+        if proposer is not None and proposee is not None:
+            Match[ord(proposer) - 65, ord(proposee) - 97] = 1
 
     return Match, num_stages
 
