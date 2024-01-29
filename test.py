@@ -154,9 +154,18 @@ for i, proposals in enumerate(proposal_list):
     print(f"Stage {i + 1}: {proposals}")
 print("Number of Stages:", num_stages)
 
-# Sample preference matrices (larger P1 with the same number of hospitals as P2)
-Q1 = np.array([[1, 0, 2, 3], [0, 2, 1, 3], [1, 0, 2, 3]])
-Q2 = np.array([[1, 0, 2], [0, 2, 1], [1, 0, 2], [2, 1, 0]])
+# 4 applicants, 3 schools
+Q1 = np.array([[0, 1, 2],  # Applicant 1's preferences
+               [1, 0, 2],  # Applicant 2's preferences
+               [2, 0, 1],  # Applicant 3's preferences
+               [0, 2, 1]]) # Applicant 4's preferences
+
+Q2 = np.array([[0, 1, 2, 3],  # School 1's preferences
+               [1, 2, 0, 3],  # School 2's preferences
+               [2, 0, 1, 3]]) # School 3's preferences
+
+quota = np.array([1, 2, 1])  # Quotas for each school
+
 
 # Sample quotas for Gale-Shapley Algorithm with Quotas (you can replace these with your own)
 quota = np.array([1, 2, 1])
