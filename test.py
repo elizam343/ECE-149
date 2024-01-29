@@ -146,8 +146,17 @@ P1 = np.array([[0, 1, 2], [1, 0, 2], [2, 0, 1]])  # Each row is a unique permuta
 P2 = np.array([[2, 1, 0], [0, 2, 1], [1, 0, 2]])  # Each column is a unique permutation
 
 
+D1 = np.array([[3, 4, 1, 2], 
+               [2, 3, 4, 1], 
+               [1, 2, 3, 4],
+               [3, 4, 2, 1]])  # Each row is a unique permutation
+D2 = np.array([[1, 1, 3, 2], 
+               [2, 2, 1, 3], 
+               [3, 3, 2, 1],
+               [4, 4, 4, 4]])  # Each column is a unique permutation
+
 # Run Gale-Shapley Algorithm
-proposal_list, num_stages = GaleShapleyAlgorithm(P1, P2)
+proposal_list, num_stages = GaleShapleyAlgorithm(D1, D2)
 print("Gale-Shapley Algorithm Results:")
 print("Proposal List:")
 for i, proposals in enumerate(proposal_list):
@@ -166,6 +175,18 @@ Q2 = np.array([[0, 1, 2, 3],  # School 1's preferences
 
 quota = np.array([1, 2, 1])  # Quotas for each school
 
+
+
+T1 = np.array([[0, 1, 2],  # Applicant 1's preferences
+               [1, 0, 2],  # Applicant 2's preferences
+               [2, 0, 1],  # Applicant 3's preferences
+               [0, 2, 1]]) # Applicant 4's preferences
+
+T2 = np.array([[0, 1, 2, 3],  # School 1's preferences
+               [1, 2, 0, 3],  # School 2's preferences
+               [2, 0, 1, 3]]) # School 3's preferences
+
+quota = np.array([1, 2, 1])  # Quotas for each school
 
 # Sample quotas for Gale-Shapley Algorithm with Quotas (you can replace these with your own)
 quota = np.array([1, 2, 1])

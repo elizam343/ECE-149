@@ -7,26 +7,18 @@ Please do not change the filename or the function names!
 
 
 
-def convert_group1_to_dict(P1):
-    """
-    Converts Group 1's preference matrix to a dictionary.
-    Rows become key values with uppercase alphabet letters as keys.
-    """
+def convert_group1_to_dict(P1, min_preference):
     group1_dict = {}
     for i, row in enumerate(P1):
         key = chr(65 + i)  # 65 is ASCII for 'A'
-        group1_dict[key] = list(row)
+        group1_dict[key] = [x - min_preference for x in list(row)]  # Adjust for starting index
     return group1_dict
 
-def convert_group2_to_dict(P2):
-    """
-    Converts Group 2's preference matrix to a dictionary.
-    Columns become key values with lowercase alphabet letters as keys.
-    """
+def convert_group2_to_dict(P2, min_preference):
     group2_dict = {}
-    for i in range(P2.shape[1]):  # Iterate over columns
+    for i in range(P2.shape[1]):
         key = chr(97 + i)  # 97 is ASCII for 'a'
-        group2_dict[key] = list(P2[:, i])
+        group2_dict[key] = [x - min_preference for x in list(P2[:, i])]  # Adjust for starting index
     return group2_dict
 
 def GaleShapleyAlgorithm(P1, P2):
@@ -41,8 +33,12 @@ def GaleShapleyAlgorithm(P1, P2):
         Match (numpy.ndarray): an m x n matrix which indicates the matches after running the algorithm.
         NumStages (int): the number of stages that it takes the Gale-Shapley algorithm to return a proposal.
     '''
-    group1_preferences = convert_group1_to_dict(P1)
-    group2_preferences = convert_group2_to_dict(P2)
+    # Determine if preferences start from 0 or 1
+    min_preference = min(np.min(P1), np.min(P2))
+
+    # Convert the preference matrices to dictionaries
+    group1_preferences = convert_group1_to_dict(P1, min_preference)
+    group2_preferences = convert_group2_to_dict(P2, min_preference)
 
     proposals = {chr(65 + i): 0 for i in range(P1.shape[0])}
     matches = {chr(97 + i): None for i in range(P2.shape[1])}
@@ -97,8 +93,12 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
         Match (numpy.ndarray): an m x n matrix which indicates the matches after running the algorithm. See the HW assignment for additional details on the structure of Match.
         NumStages (int): the number of stages that it takes the Gale-Shapley algorithm to return a proposal.
     '''
-    group1_preferences = convert_group1_to_dict(P1)
-    group2_preferences = convert_group2_to_dict(P2)
+    # Determine if preferences start from 0 or 1
+    min_preference = min(np.min(P1), np.min(P2))
+
+    # Convert the preference matrices to dictionaries
+    group1_preferences = convert_group1_to_dict(P1, min_preference)
+    group2_preferences = convert_group2_to_dict(P2, min_preference)
 
     proposals = {chr(65 + i): 0 for i in range(P1.shape[0])}
     last_choices = {chr(65 + i): None for i in range(P1.shape[0])}
