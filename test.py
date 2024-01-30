@@ -155,8 +155,15 @@ D2 = np.array([[1, 1, 3, 2],
                [3, 3, 2, 1],
                [4, 4, 4, 4]])  # Each column is a unique permutation
 
+G1 = np.array([[2, 1, 3, 4, 5], 
+               [3, 1, 2, 5, 4], 
+               [3, 1, 4, 2, 5]])  # Each row is a unique permutation
+G2 = np.array([[1, 1, 2, 3, 3], 
+               [2, 3, 1, 1, 2], 
+               [3, 2, 3, 2, 1]])  # Each column is a unique permutation
+
 # Run Gale-Shapley Algorithm
-proposal_list, num_stages = GaleShapleyAlgorithm(D1, D2)
+proposal_list, num_stages = GaleShapleyAlgorithm(G1, G2)
 print("Gale-Shapley Algorithm Results:")
 print("Proposal List:")
 for i, proposals in enumerate(proposal_list):

@@ -31,8 +31,8 @@ def GaleShapleyAlgorithm(P1, P2):
     Runs the Gale-Shapley algorithm, where agents in Group 1 (the group corresponding to P1) propose.
 
     Args:
-        P1 (numpy.ndarray): an m x n matrix describing the preferences of the agents in Group 1. Each row is preference of each of m riders.
-        P2 (numpy.ndarray): an m x n matrix describing the preferences of the agents in Group 2. Each column is preference of each of n drivers.
+        P1 (numpy.ndarray)(row based): an m x n matrix describing the preferences of the agents in Group 1. Each row is preference of each of m riders.
+        P2 (numpy.ndarray)(column based): an m x n matrix describing the preferences of the agents in Group 2. Each column is preference of each of n drivers.
 
     Returns:
         Match (numpy.ndarray): an m x n matrix which indicates the matches after running the algorithm.
@@ -101,8 +101,8 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
     Runs the Gale-Shapley algorithm, where agents in Group 1 (the group corresponding to P1) propose. Each agent in P2 has a number of spots available specified by the variable quota.
 
     Args:
-        P1 (numpy.ndarray): an m x n matrix describing the preferences of the agents in Group 1. Each row is preference of each of m students.
-        P2 (numpy.ndarray): an m x n matrix describing the preferences of the agents in Group 2. Each column is preference of each of n hospitals.
+        P1 (numpy.ndarray)(row based): an m x n matrix describing the preferences of the agents in Group 1. Each row is preference of each of m students.
+        P2 (numpy.ndarray)(column based): an m x n matrix describing the preferences of the agents in Group 2. Each column is preference of each of n hospitals.
         quota (numpy.ndarray): an n x 1 vector describing the quota of each agent in Group 2.
 
     Returns:
