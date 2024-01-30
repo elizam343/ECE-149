@@ -112,9 +112,13 @@ def GaleShapleyAlgorithmQuota(P1, P2, quota):
     # Determine if preferences start from 0 or 1
     min_preference = min(np.min(P1), np.min(P2))
 
-    # Convert the preference matrices to dictionaries
-    group1_preferences = convert_group1_to_dict(P1, min_preference)
-    group2_preferences = convert_group2_to_dict(P2, min_preference)
+    # Adjust the preference matrices
+    P1_adjusted = convert_preferences(P1, min_preference)
+    P2_adjusted = convert_preferences(P2, min_preference)
+
+    # Convert the adjusted preference matrices to dictionaries
+    group1_preferences = convert_group1_to_dict(P1_adjusted)
+    group2_preferences = convert_group2_to_dict(P2_adjusted)
 
     proposals = {chr(65 + i): 0 for i in range(P1.shape[0])}
     last_choices = {chr(65 + i): None for i in range(P1.shape[0])}
