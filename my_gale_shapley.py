@@ -6,19 +6,24 @@ Please do not change the filename or the function names!
 
 
 
+def convert_preferences(P, min_preference):
+    """ Adjust preferences to start from 0 """
+    return P - min_preference
 
-def convert_group1_to_dict(P1, min_preference):
+def convert_group1_to_dict(P):
+    """ Converts Group 1's preference matrix to a dictionary """
     group1_dict = {}
-    for i, row in enumerate(P1):
+    for i, row in enumerate(P):
         key = chr(65 + i)  # 65 is ASCII for 'A'
-        group1_dict[key] = [x - min_preference for x in list(row)]  # Adjust for starting index
+        group1_dict[key] = list(row)
     return group1_dict
 
-def convert_group2_to_dict(P2, min_preference):
+def convert_group2_to_dict(P):
+    """ Converts Group 2's preference matrix to a dictionary """
     group2_dict = {}
-    for i in range(P2.shape[1]):
+    for i in range(P.shape[1]):
         key = chr(97 + i)  # 97 is ASCII for 'a'
-        group2_dict[key] = [x - min_preference for x in list(P2[:, i])]  # Adjust for starting index
+        group2_dict[key] = list(P[:, i])
     return group2_dict
 
 def GaleShapleyAlgorithm(P1, P2):
@@ -36,12 +41,16 @@ def GaleShapleyAlgorithm(P1, P2):
     # Determine if preferences start from 0 or 1
     min_preference = min(np.min(P1), np.min(P2))
 
-    # Convert the preference matrices to dictionaries
-    group1_preferences = convert_group1_to_dict(P1, min_preference)
-    group2_preferences = convert_group2_to_dict(P2, min_preference)
+    # Adjust the preference matrices
+    P1_adjusted = convert_preferences(P1, min_preference)
+    P2_adjusted = convert_preferences(P2, min_preference)
 
-    proposals = {chr(65 + i): 0 for i in range(P1.shape[0])}
-    matches = {chr(97 + i): None for i in range(P2.shape[1])}
+    # Convert the adjusted preference matrices to dictionaries
+    group1_preferences = convert_group1_to_dict(P1_adjusted)
+    group2_preferences = convert_group2_to_dict(P2_adjusted)
+
+    proposals = {chr(65 + i): 0 for i in range(P1_adjusted.shape[0])}
+    matches = {chr(97 + i): None for i in range(P2_adjusted.shape[1])}
     num_stages = 0
 
     while True:
@@ -49,12 +58,19 @@ def GaleShapleyAlgorithm(P1, P2):
         new_proposals = {}
 
         for proposer in proposals:
+            proposer_index = ord(proposer) - 65  # Convert proposer character to index (A -> 0, B -> 1, etc.)
             proposee_index = proposals[proposer]
             if proposee_index < len(group1_preferences[proposer]):
                 proposee = group1_preferences[proposer][proposee_index]
+
+                # Debugging print statements
+                print("Proposer:", proposer, "Proposee:", proposee)
+                print("Group 2 Preferences for proposee:", group2_preferences[chr(97 + proposee)])
+
                 current_match = matches[chr(97 + proposee)]
 
-                if current_match is None or group2_preferences[chr(97 + proposee)].index(proposer) < group2_preferences[chr(97 + proposee)].index(current_match):
+                # Check if the proposer is preferred over the current match
+                if current_match is None or group2_preferences[chr(97 + proposee)].index(proposer_index) < group2_preferences[chr(97 + proposee)].index(ord(current_match) - 65):
                     matches[chr(97 + proposee)] = proposer
 
         for proposer in proposals:
